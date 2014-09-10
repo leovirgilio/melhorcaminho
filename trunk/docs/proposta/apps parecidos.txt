@@ -1,0 +1,61 @@
+Onde Está Meu Ônibus?
+Para iOS, o Onde Está Meu Ônibus também monitora a posição dos veículos das linhas de São Paulo em um mapa baseado no sistema da Apple.
+
+Bastante simples, mas cumprindo o que promete, o app mostra na tela inicial um campo de buscas, onde deve ser digitado o nome ou o número da linha desejada. Os resultados encontrados serão exibidos quase que instantaneamente.
+
+O usuário precisa apenas selecionar o item correto - se quiser, ainda pode tocar na estrela do lado direito para favoritá-lo.
+
+Feito isso, um mapa com a posição de cada veículo da linha será mostrado. Os ícones de cada um trazem informações básicas, como prefixo, nome que está escrito na frente e até mesmo presença de lugares para cadeirantes.
+
+Moovit
+Com versões para Android e iOS, o Moovit permite ajuda a planejar viagens usando não só ônibus, como também trem, metrô e até seus próprios pés.
+
+Bem elaborado, o app requer apenas alguns passos para funcionar. Primeiro, você define o local de onde vai sair (que pode ser detectado usando o GPS do aparelho). Depois, escolhe o lugar onde quer chegar. O Moovit, então, mostrará algumas opções de caminhos para você escolher.
+
+Traçada a rota, o aplicativo mostra o ponto de ônibus mais próximo, informa qual o carro que você precisa pegar e até avisa quando estiver chegando no local em que precisa descer.
+
+O Moovit ainda utiliza informações dos próprios usuários para alertar quando um caminho está muito congestionado. No entanto, o app funciona apenas nas cidades de São Paulo e do Rio de Janeiro, e requer uma conexão 3G boa para funcionar sem falhas.
+
+Omnibus
+O Omnibus, para Android, mostra em um mapa, em tempo real, a posição e as rotas dos ônibus na cidade e São Paulo.
+
+O app apresenta, logo na tela inicial, um campo para ser preenchido com o nome ou o número da linha de ônibus desejada. Ao fazer isso, é só selecionar uma das opções que aparecer e marcá-la depois logo abaixo.
+
+Clicando em Ver no Mapa, na parte inferior da tela, o Omnibus mostrará no mapa do Google Maps o trajeto e a posição em que estão os ônibus da linha. Dando um toque sobre um dos ícones dos veículos mostrados, vê-se um quadro com dados dele, como o número e código do carro, a distância “atual” dele para o usuário e mais.
+
+Um dos problemas do Omnibus é a falta de precisão no posicionamento dos ônibus. Isso porque os dados são fornecidos pela SPTrans, que tem um sistema não muito confiável nesses casos. Mesmo assim, o aplicativo é bastante útil para conferir as rotas das linhas de ônibus de São Paulo.
+
+Cadê o Ônibus?
+Outra boa alternativa para monitorar a movimentação dos ônibus em São Paulo, capital, é o Cadê o Ônibus, também para Android.
+
+No app, que tem uma interface um tanto carregada e confusa, basta clicar no segundo ícone do alto da tela para procurar por uma linha escrevendo o nome ou o número dela. Os resultados são exibidos logo abaixo do campo, com o destino na parte de cima do nome e a origem na parte de baixo.
+
+Dando um toque na opção desejada, dá para escolher ver a posição dos ônibus no mapa (além do trajeto da linha) ou o itinerário que os veículos percorrem. Para favoritar uma das opções, basta mantê-la pressionada. Esses itens favoritos serão listados na primeira aba do app.
+
+Como diferencial, o Cadê o Ônibus apresenta uma ótima ferramenta que monitora as condições do trânsito nos principais corredores de São Paulo. Para usá-la, basta clicar na terceira aba e aguardar até o aplicativo buscar os dados. São mostrados a velocidade e o tempo que os ônibus demoram para percorrer o caminho nos dois sentidos.
+
+Próximo Ônibus
+Existem também opções que ajudam usuários de ônibus e smartphones fora do eixo Rio-São Paulo. É o caso do Próximo Ônibus, para Android, que mostra os horários dos próximos carros em Curitiba, no Paraná, e em Juiz de Fora, no estado de Minas Gerais.
+
+Com um banco de dados atualizado constantemente, o app permite selecionar uma linha e um local de partida de acordo com ela. Feito isso, você só precisa apertar o botão Consultar Horário
+
+Uma tabela com os horários será mostrada, e o aplicativo avisará sempre que a hora do próximo ônibus estiver chegando. Também dá para marcar as linhas favoritas, tornando mais fácil encontrá-las quando precisar.
+
+Cadê o Bus?
+Com um nome parecido, mas bem mais simples que o Cadê o Ônibus?, este app mostra os horários dos ônibus que circulam na região de Balneário Camboriú, em Santa Catarina.
+
+Ele funciona como uma tabela de horários interativa. Basta selecionar a viação desejada e, no caso da Viação Praiana, escolher a cidade de origem e a de destino e clicar em Buscar. Já no caso da Expressul, é necessário escolher a linha e tocar em Buscar.
+
+Uma tela com o preço da passagem e os horários de saída dos veículos é mostrada logo em seguida, divida em "Segunda a Sexta", "Sábado" e "Domingos e Feriados". 
+
+Simples ao máximo, o Cadê o Bus poderia oferecer mais alguns recursos, como um mapa com a localização de pontos e, quem sabe, até com a posição dos ônibus. De qualquer forma, cumpre o que promete, dispensando até mesmo a conexão com a internet (exceto quando precisa atualizar as tabelas).
+
+Não Durma no Ponto
+Mais voltado para a viagem do que para o planejamento, o Não Durma no Ponto, para Android, promete acordar você quando estiver chegando no ponto em que precisa descer.
+
+Para isso, o app utiliza o sistema de GPS e a conexão com a internet do smartphone para localizar você no mapa do Google Maps.
+
+Para ativar o alarme, é preciso apenas digitar o endereço final clicando na pequena lupa no alto da tela. Depois, voltando ao inicial (dê um toque no ícone da direita e selecione Onde Estou), mantenha o ponto pressionado para que uma tela apareça. Nela, selecione a distância em que o app acionará o alarme (de 500 m a 10 Km) e toque em Sim.
+
+O Não Durma no Ponto ainda apresenta alguns bugs, algo até normal em aplicativos recentes como ele. Nos testes do INFOLab, o smartphone precisou ser reiniciado para que o alarme pudesse ser configurado de forma correta.
+
