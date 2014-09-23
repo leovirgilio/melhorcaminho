@@ -37,9 +37,27 @@
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
+         <!-- All Product Activity -->
+        <activity
+            android:name=".AllUFs"
+            android:label="All Products" >
+        </activity>
+
+        <!-- Add Product Activity -->
+        <activity
+            android:name=".NewUF"
+            android:label="Add New UF" >
+        </activity>
+
+        <!-- Edit Product Activity -->
+        <activity
+            android:name=".EditUF"
+            android:label="Edit UF" >
+        </activity>
     </application>
 
-    <!-- Internet Permissions -->
+     <!--  Internet Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
+
 
 </manifest>

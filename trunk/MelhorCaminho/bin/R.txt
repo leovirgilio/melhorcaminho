@@ -270,6 +270,7 @@ int id expanded_menu 0x7f05002c
 int id home 0x7f050014
 int id homeAsUp 0x7f050005
 int id icon 0x7f05002a
+int id id 0x7f05004a
 int id ifRoom 0x7f05000a
 int id image 0x7f050027
 int id imgLogo 0x7f050049
@@ -279,12 +280,11 @@ int id login 0x7f050045
 int id login_form 0x7f05003d
 int id login_progress 0x7f05003c
 int id middle 0x7f050012
-int id name 0x7f05004b
 int id never 0x7f050009
+int id nome 0x7f05004b
 int id none 0x7f050010
 int id normal 0x7f050000
 int id password 0x7f050044
-int id pid 0x7f05004a
 int id plus_disconnect_button 0x7f050041
 int id plus_sign_in_button 0x7f05003e
 int id plus_sign_out_button 0x7f050040
