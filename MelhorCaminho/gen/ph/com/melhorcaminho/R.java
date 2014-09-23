@@ -1115,6 +1115,7 @@ containing a value of this type.
         public static final int home=0x7f050014;
         public static final int homeAsUp=0x7f050005;
         public static final int icon=0x7f05002a;
+        public static final int id=0x7f05004a;
         public static final int ifRoom=0x7f05000a;
         public static final int image=0x7f050027;
         public static final int imgLogo=0x7f050049;
@@ -1124,12 +1125,11 @@ containing a value of this type.
         public static final int login_form=0x7f05003d;
         public static final int login_progress=0x7f05003c;
         public static final int middle=0x7f050012;
-        public static final int name=0x7f05004b;
         public static final int never=0x7f050009;
+        public static final int nome=0x7f05004b;
         public static final int none=0x7f050010;
         public static final int normal=0x7f050000;
         public static final int password=0x7f050044;
-        public static final int pid=0x7f05004a;
         public static final int plus_disconnect_button=0x7f050041;
         public static final int plus_sign_in_button=0x7f05003e;
         public static final int plus_sign_out_button=0x7f050040;
