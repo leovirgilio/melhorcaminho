@@ -40,7 +40,7 @@
          <!-- All Product Activity -->
         <activity
             android:name=".AllUFs"
-            android:label="All Products" >
+            android:label="All UFs" >
         </activity>
 
         <!-- Add Product Activity -->

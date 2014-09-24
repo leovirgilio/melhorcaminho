@@ -39,7 +39,7 @@ public class AllUFs extends ListActivity {
     // JSON Node nomes
     private static final String TAG_SUCCESS = "success";
     private static final String TAG_UFS = "ufs";
-    private static final String TAG_ID = "id";
+    private static final String TAG_ID = "pid";
     private static final String TAG_NOME = "nome";
  
     // ufs JSONArray
@@ -67,7 +67,7 @@ public class AllUFs extends ListActivity {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 // getting values from selected ListItem
-                String pid = ((TextView) view.findViewById(R.id.id)).getText()
+                String pid = ((TextView) view.findViewById(R.id.pid)).getText()
                         .toString();
  
                 // Starting new intent
@@ -188,7 +188,7 @@ public class AllUFs extends ListActivity {
                             AllUFs.this, ufsList,
                             R.layout.list_item, new String[] { TAG_ID,
                                     TAG_NOME},
-                            new int[] { R.id.id, R.id.nome });
+                            new int[] { R.id.pid, R.id.nome });
                     // updating listview
                     setListAdapter(adapter);
                 }
