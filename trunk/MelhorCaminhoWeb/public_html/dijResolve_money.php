@@ -19,11 +19,24 @@ if ($fromNode == "" || $toNode == null) {
         $query = "call dijResolve_money('$fromNode','$toNode')";
         $result = mysql_query($query, $connect);
         if ($result) {
+            echo "O caminho mais barato para chegar em ".strtoupper($toNode)." saindo de ".strtoupper($fromNode).":";
+            echo "<table>";
             while ($row = mysql_fetch_array($result)) {
-                echo $row['FromNodeName'] . "-" . $row['ToNodeName'] . "-" . $row['Cost'];
+                echo "<tr>
+                        <td>"
+                            .$row['FromNodeName'].
+                        "</td>
+                        <td>"
+                            .$row['ToNodeName'].
+                        "</td>
+                        <td>"
+                            .$row['Cost'].
+                        "</td>
+                    </tr>";
                 echo "<br />";
         
                 }
+                echo "</table>";
         } else {
             echo"<script language='javascript' type='text/javascript'>alert('N�o foi poss�vel cadastrar esse usu�rio');window.location.href='caminho.html'</script>";
         }
