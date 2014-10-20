@@ -15,18 +15,18 @@ $array = mysql_fetch_array($select);
 $logarray = $array['toNode'];
 
 if ($toNode == "" || $toNode == null) {
-    echo"<script language='javascript' type='text/javascript'>alert('O campo login deve ser preenchido');window.location.href='caminho.html';</script>";
+    echo"<script language='javascript' type='text/javascript'>alert('O campo DE deve ser preenchido');window.location.href='caminho.html';</script>";
 } else {
     if ($logarray == $toNode) {
-        echo"<script language='javascript' type='text/javascript'>alert('Esse login j� existe');window.location.href='caminho.html';</script>";
+        echo"<script language='javascript' type='text/javascript'>alert('Erro');window.location.href='caminho.html';</script>";
         die();
     } else {
         $query = "call dijaddpath_money ('$toNode','$fromNode', '$cost')";
         $insert = mysql_query($query, $connect);
         if ($insert) {
-            echo"<script language='javascript' type='text/javascript'>alert('Usu�rio cadastrado com sucesso!');window.location.href='home.html'</script>";
+            echo"<script language='javascript' type='text/javascript'>alert('Caminho localizado!');window.location.href='home.html'</script>";
         } else {
-            echo"<script language='javascript' type='text/javascript'>alert('N�o foi poss�vel cadastrar esse usu�rio');window.location.href='caminho.html'</script>";
+            echo"<script language='javascript' type='text/javascript'>alert('Não foi possível localizar sua rota.');window.location.href='home.html'</script>";
         }
     }
 }
