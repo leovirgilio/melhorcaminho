@@ -34,7 +34,7 @@ public class AllUFs extends ListActivity {
     ArrayList<HashMap<String, String>> ufsList;
  
     // url to get all ufs list
-    private static String url = "http://melhorcaminho.url.ph/get_all_uf.php";
+    private static String url = "http://melhorcaminho.url.ph/dijResolve_money.php";
  
     // JSON Node nomes
     private static final String TAG_SUCCESS = "success";
