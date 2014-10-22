@@ -14,7 +14,6 @@ if (isset($login_cookie)) {
     echo"Essas informaçõeses <font color='red'>PODEM</font> ser acessadas por voc�";
 
 
-    Redirect('http://melhorcaminho.url.ph/home.html', false);
 } else {
     echo"Bem-Vindo, convidado <br>";
 

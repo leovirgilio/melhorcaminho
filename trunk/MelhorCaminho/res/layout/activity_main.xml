@@ -2,22 +2,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
- 
-    <!--  Sample Dashboard screen with Two buttons -->
-    <!--  Button to view all products screen -->
-    <Button android:id="@+id/btnVerUF"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <!-- Sample Dashboard screen with Two buttons -->
+    <!-- Button to view all products screen -->
+
+    <Button
+        android:id="@+id/btnVerUF"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Ver todos os UF"
-        android:layout_marginTop="25dip"/>
- 
-    <!--  Button to create a new product screen -->
-    <Button android:id="@+id/btnNovoUF"
+        android:layout_marginTop="25dip"
+        android:text="Ver todos os UF" />
+
+    <!-- Button to create a new product screen -->
+
+    <Button
+        android:id="@+id/btnNovoUF"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Adicionar novo UF"
-        android:layout_marginTop="25dip"/>
- 
+        android:layout_marginTop="25dip"
+        android:text="Adicionar novo UF" />
+
+    <EditText
+        android:id="@+id/txtFromNode"
+        android:layout_width="fill_parent"
+        android:layout_height="65dp"
+        android:hint="Origem" />
+
+    <EditText
+        android:id="@+id/txtToNode"
+        android:layout_width="fill_parent"
+        android:layout_height="65dp"
+        android:hint="Destino" />
+
+    <Button
+        android:id="@+id/btnProcurar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dip"
+        android:text="Taca le pau" />
+
 </LinearLayout>
