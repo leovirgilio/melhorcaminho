@@ -10,10 +10,10 @@ $db = mysql_select_db('u559965827_sro');
 $logarray = $array['toNode'];
 
 if ($fromNode == "" || $toNode == null) {
-    echo"<script language='javascript' type='text/javascript'>alert('O campo login deve ser preenchido');window.location.href='caminho.html';</script>";
+    echo"<script language='javascript' type='text/javascript'>alert('O campo origem e destino devem ser preenchidos');window.location.href='caminho.html';</script>";
 } else {
     if ($logarray == $toNode) {
-        echo"<script language='javascript' type='text/javascript'>alert('Esse login j� existe');window.location.href='caminho.html';</script>";
+        echo"<script language='javascript' type='text/javascript'>alert('Erro');window.location.href='caminho.html';</script>";
         die();
     } else {
         $query = "call dijResolve_money('$fromNode','$toNode')";
