@@ -14,14 +14,12 @@ and open the template in the editor.
     top: 10px;
     width: 200px;
     height: 100%;
-    border: 1px solid #333333;
 }
 
 #conteudo{
     position: absolute;
     top: 10px;
     left: 215px;
-    border: 1px solid;
     padding: 20px;
     width: 600px;
 }
@@ -37,5 +35,9 @@ and open the template in the editor.
 }
 
 #menu li:hover{
-    background-color: #CCCCCC;
+    color: #CCCCCC;
+}
+
+#menu ul{
+    list-style-type: none;
 }
