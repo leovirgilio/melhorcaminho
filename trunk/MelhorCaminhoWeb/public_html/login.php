@@ -13,7 +13,7 @@ $db = mysql_select_db('u559965827_sro');
                     die();
                 }else{
                     setcookie("login",$login);
-                    header("Location:http://melhorcaminho.url.ph/index.php");
+                    header("Location:http://melhorcaminho.url.ph/home.php");
                 }
         }
 ?>
