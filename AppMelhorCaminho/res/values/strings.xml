@@ -5,5 +5,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_dijkstra_money">DijkstraMoney</string>
+    <string name="origem">Origem: </string>
+    <string name="destino">Destino: </string>
+    <string name="reais">Total R$: </string>
 
 </resources>
