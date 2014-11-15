@@ -11,8 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dip"
         android:layout_marginBottom="15dip"
-        android:singleLine="true"
-        android:hint="Origem" />
+        android:hint="Origem"
+        android:singleLine="true" />
 
     <EditText
         android:id="@+id/txtTo"
@@ -20,8 +20,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dip"
         android:layout_marginBottom="15dip"
-        android:singleLine="true"
-        android:hint="Destino" />
+        android:hint="Destino"
+        android:singleLine="true" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -34,15 +34,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dip"
             android:layout_weight="1"
-            android:text="Mais barata" />
+            android:text="Pesquisar" />
 
-        <Button
-            android:id="@+id/btnTemp"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dip"
-            android:layout_weight="1"
-            android:text="Mais rápida" />
+      
     </LinearLayout>
 
 </LinearLayout>

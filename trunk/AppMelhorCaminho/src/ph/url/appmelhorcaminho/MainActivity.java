@@ -1,5 +1,8 @@
 package ph.url.appmelhorcaminho;
 
+import java.text.Normalizer;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,10 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-public class MainActivity extends Activity{
+@SuppressLint("NewApi") public class MainActivity extends Activity{
 	
 	Button btnMoney;
-	Button btnTemp;
+//	Button btnTemp;
 	EditText inputFrom;
 	EditText inputTo;
 	
@@ -22,10 +25,11 @@ public class MainActivity extends Activity{
 		
 		// Buttons
 		btnMoney = (Button) findViewById(R.id.btnMoney);
-		btnTemp = (Button) findViewById(R.id.btnTemp);
+//		btnTemp = (Button) findViewById(R.id.btnTemp);
 		
 		inputFrom = (EditText) findViewById(R.id.txtFrom);
 		inputTo = (EditText) findViewById(R.id.txtTo);
+		
 	
 		btnMoney.setOnClickListener(new View.OnClickListener() {
 			
@@ -35,23 +39,19 @@ public class MainActivity extends Activity{
 				
 				Intent i = new Intent(getApplicationContext(), DijkstraMoney.class);
 				
-				i.putExtra("from", inputFrom.getText().toString());
-				i.putExtra("to", inputTo.getText().toString());
+				i.putExtra("from", removerAcentos(inputFrom.getText().toString()));
+				i.putExtra("to", removerAcentos(inputTo.getText().toString()));
 				startActivity(i);
 				
 			}
 		});
 		
+		
 	
-		btnTemp.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View view) {
-			
-				Intent i = new Intent(getApplicationContext(), DijkstraMoney.class);
-				startActivity(i);
-				
-			}
-		});
+
+	}
+
+	public static String removerAcentos(String str) {
+	    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 	}
 }
