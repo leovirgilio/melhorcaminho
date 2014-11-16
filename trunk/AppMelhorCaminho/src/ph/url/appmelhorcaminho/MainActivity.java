@@ -4,7 +4,11 @@ import java.text.Normalizer;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +21,7 @@ import android.widget.EditText;
 //	Button btnTemp;
 	EditText inputFrom;
 	EditText inputTo;
+	boolean b_IsConnect = isNetworkAvailable();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -39,9 +44,18 @@ import android.widget.EditText;
 				
 				Intent i = new Intent(getApplicationContext(), DijkstraMoney.class);
 				
-				i.putExtra("from", removerAcentos(inputFrom.getText().toString()));
-				i.putExtra("to", removerAcentos(inputTo.getText().toString()));
-				startActivity(i);
+				if(b_IsConnect){
+					i.putExtra("from", removerAcentos(inputFrom.getText().toString()));
+					i.putExtra("to", removerAcentos(inputTo.getText().toString()));
+					startActivity(i);
+				}else{
+		            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		            dialog.setTitle("MyException Occured");
+		            dialog.setNeutralButton("Cool", null);
+		            dialog.create().show();
+				}
+				
+				
 				
 			}
 		});
@@ -54,4 +68,13 @@ import android.widget.EditText;
 	public static String removerAcentos(String str) {
 	    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
 	}
+	
+	
+
+	private boolean isNetworkAvailable() {
+	        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	        NetworkInfo activeNetworkInfo = connectivityManager
+	                .getActiveNetworkInfo();
+	        return activeNetworkInfo != null;
+	    }
 }

@@ -8,5 +8,6 @@
     <string name="origem">Origem: </string>
     <string name="destino">Destino: </string>
     <string name="reais">Total R$: </string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
 
 </resources>
