@@ -13,17 +13,20 @@ $response = array();
 $query = "call dijResolve_money('$fromNode','$toNode')";
 $result = mysql_query($query, $connect) or die(mysql_error());
 
+echo $fromNode;
+echo $toNode;
 
-if(!empty($result)){
+if($fromNode != "" or $toNode != ""){
+
      if (mysql_num_rows($result) > 0) {
-
 
         $response["dijresolves"] = array();
         
         while ($row = mysql_fetch_array($result)) {
             
             $dijresolve = array();
-            $dijresolve["FromNodeName"] = $row["FromNodeName"];        
+            $dijresolve["FromNodeName"] = $row["FromNodeName"];
+			echo $row["FromNodeName"]; 	
             $dijresolve["ToNodeName"] = $row["ToNodeName"];
             $dijresolve["Cost"] = $row["Cost"];
            array_push($response["dijresolves"], $dijresolve);
@@ -42,11 +45,12 @@ if(!empty($result)){
             // echo no users JSON
             echo json_encode($response);
     }
-}else {
-        // no product found
-        $response["success"] = 0;
-        $response["message"] = "Caminho nao encontrado.";
-        // echo no users JSON
-        echo json_encode($response);
-    }
+} else {
+	 // no product found
+            $response["success"] = 0;
+            $response["message"] = "Origem ou destino sem valor.";
+ 
+            // echo no users JSON
+            echo json_encode($response);
+}
 ?>
