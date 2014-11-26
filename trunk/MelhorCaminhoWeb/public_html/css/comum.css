@@ -9,9 +9,12 @@ and open the template in the editor.
 */
 
 body{
-    background-color: #EBEBE0;
-    color: #CCCCCC;
+
+    /*color: #CCCCCC;*/
     text-align: center;
+    background-color: #EDEDED;
+
+
 }
 
 #imgUnlock{
@@ -31,5 +34,70 @@ body{
     width: 160px;
     height: 30px;
     margin-top: 30px;
+}
+#menu ul {
+    padding:0px;
+    margin:0px;
+    background-color: #EDEDED;
+    list-style:none;
+}
+#menu ul li { display: inline; }
+#menu ul li a {
+    padding: 2px 10px;
+    display: inline-block;
+
+    /* visual do link */
+    background-color:#EDEDED;
+    color: #333;
+    text-decoration: none;
+    border-bottom:3px solid #EDEDED;
+}
+#menu ul li a:hover {
+    background-color:#D6D6D6;
+    color: #6D6D6D;
+    border-bottom:3px solid #FFC83C;
+}
+
+.menubk{
+    text-align: center;
+    width: 100px;
+    height: 100px;
+    background-size: 80px;
+    background-repeat: no-repeat;
+    background-position: 20px 25px;
+}
+
+#menucaminho{
+    background-image: url(../img/caminho.png);
+}
+#menucaminho{
+    background-image: url(../img/caminho.png);
+}
+#menucaminho{
+    background-image: url(../img/caminho.png);
+}
+#menudijpath{
+    background-image: url(../img/dijpath.png);
+}
+#menudijnode{
+    background-image: url(../img/dijnode.png);
+}
+#menucidade{
+    background-image: url(../img/cidade.png);
+}
+#menuuf{
+    background-image: url(../img/uf.png);
+}
+#menumarca{
+    background-image: url(../img/marca.png);
+}
+#menutipo{
+    background-image: url(../img/tipo.png);
+}
+#menuveiculo{
+    background-image: url(../img/veiculo.png);
+}
+#menuusuario{
+    background-image: url(../img/usuario.png);
 }
 
