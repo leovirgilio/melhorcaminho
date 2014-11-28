@@ -54,8 +54,21 @@
 
             /* Connect with the database */
 
-            $connect = mysql_connect('mysql.hostinger.com.br', '', '');
-            $db = mysql_select_db('');
+            $connect = mysql_connect('mysql.hostinger.com.br', 'u559965827_admin', 'leonardo$123');
+            $db = mysql_select_db('u559965827_sro');
+
+
+            $sql = mysql_query("SELECT * FROM gui_tb_uf");
+            $combo;
+            
+            while ($exibe = mysql_fetch_assoc($sql)) {
+              $value = $exibe['tx_sigla'];
+              $id_path = $exibe['id_uf'];
+
+              $combo = $combo.":".$id_path."_".$value;
+             
+            }
+
 
             $objGrid->conectadb("mysql.hostinger.com.br", "u559965827_admin", "leonardo$123", "u559965827_sro");
 
@@ -68,7 +81,7 @@
 
             $objGrid->salt("Some Code4Stronger(Protection)");
 
-            $objGrid->TituloGrid("<div style='float:left'><a href='home.html'>Voltar</a></div");
+            $objGrid->TituloGrid("<div style='float:left'><a href='cadastro_f.php'><img src='../images/home.png'></a></div> CIDADES");
 
             $objGrid->FooterGrid("<div style='float:left'>&copy; MelhorCaminho.url.ph</div>");
 
@@ -83,8 +96,8 @@
             /* Define fields to show */
 //            $objGrid->FormatColumn("id_empresa", "ID", 5, 5, 1, "50", "center");
             $objGrid->FormatColumn("id_cidade", "ID", 30, 30, 0, "50", "center");
-            $objGrid->FormatColumn("id_uf", "UF", 5, 5, 0, "60", "left", "select:16_Single:25_Married:3_Divorced");
-            $objGrid->FormatColumn("tx_nome", "Nome", 30, 30, 0, "50", "left");
+            $objGrid->FormatColumn("id_uf", "UF", 5, 5, 0, "50", "left", "select$combo");
+            $objGrid->FormatColumn("tx_nome", "Nome", 30, 30, 0, "300", "left");
             /* The setHeader function MUST be set between the <HEAD> and </HEAD>  
               to correctly set the CSS and JS parameters */
             $objGrid->setHeader();
