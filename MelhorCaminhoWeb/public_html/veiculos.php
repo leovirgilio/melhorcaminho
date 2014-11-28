@@ -31,44 +31,77 @@
 
   For contact author: tavoarcila at gmail dot com or info at gurusistemas dot com
  */ ?> 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml"> 
-    <head> 
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        <link rel="stylesheet" type="text/css" href="css/comum.css"></link>
-        <title>Usuarios - Melhor Caminho</title> 
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+ <html xmlns="http://www.w3.org/1999/xhtml"> 
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" type="text/css" href="css/comum.css"></link>
+  <title>Viculos - Melhor Caminho</title> 
 
-        <?php
-        $login_cookie = $_COOKIE['login'];
-        if (isset($login_cookie)) {
-            /* Include class file */
-            include ("phpmydatagrid.class.php");
+  <?php
+  $login_cookie = $_COOKIE['login'];
+  if (isset($login_cookie)) {
+    /* Include class file */
+    include ("phpmydatagrid.class.php");
 
-            /* Create object */
-            $objGrid = new datagrid;
+    /* Create object */
+    $objGrid = new datagrid;
 
             /* Define the "FORM" will be named employee and Must be  
-              created by the grid script */
-            $objGrid->form('usuarios', true);
+            created by the grid script */
+            $objGrid->form('gui_tb_veiculo', true);
 
             /* Connect with the database */
 
-            $connect = mysql_connect('mysql.hostinger.com.br', '', '');
-            $db = mysql_select_db('');
+            $connect = mysql_connect('mysql.hostinger.com.br', 'u559965827_admin', 'leonardo$123');
+            $db = mysql_select_db('u559965827_sro');
+
+
+            $sqlMarca = mysql_query("SELECT * FROM gui_tb_marca");
+            $comboMarca;
+            
+            while ($exibe = mysql_fetch_assoc($sqlMarca)) {
+              $value = $exibe['tx_nome'];
+              $id_path = $exibe['id_marca'];
+
+              $comboMarca = $comboMarca.":".$id_path."_".$value;
+
+            }
+            $sqlTipo = mysql_query("SELECT * FROM gui_tb_tipo");
+            $comboTipo;
+            
+            while ($exibe = mysql_fetch_assoc($sqlTipo)) {
+              $value = $exibe['tx_tipo'];
+              $id_path = $exibe['id_tipo'];
+
+              $comboTipo = $comboTipo.":".$id_path."_".$value;
+
+            }
+            $sqlEmpresa = mysql_query("SELECT * FROM gui_tb_empresa");
+            $comboEmpresa;
+            
+            while ($exibe = mysql_fetch_assoc($sqlEmpresa)) {
+              $value = $exibe['nome'];
+              $id_path = $exibe['id_empresa'];
+
+              $comboEmpresa = $comboEmpresa.":".$id_path."_".$value;
+
+            }
+
 
             $objGrid->conectadb("mysql.hostinger.com.br", "u559965827_admin", "leonardo$123", "u559965827_sro");
 
             /* Select the table to use */
-            $objGrid->tabla("usuarios");
+            $objGrid->tabla("gui_tb_veiculo");
 
             $objGrid->buttons(true, true, true);
 
-            $objGrid->keyfield("id");
+            $objGrid->keyfield("id_veiculo");
 
             $objGrid->salt("Some Code4Stronger(Protection)");
 
-            $objGrid->TituloGrid("<div style='float:left'><a href='home.html'><img src='../images/home.png'></a></div> Usuarios");
+            $objGrid->TituloGrid("<div style='float:left'><a href='cadastro_f.php'><img src='../images/home.png'></a></div> VEICULOS");
 
             $objGrid->FooterGrid("<div style='float:left'>&copy; MelhorCaminho.url.ph</div>");
 
@@ -81,31 +114,33 @@
 
 
             /* Define fields to show */
-            $objGrid->FormatColumn("id", "ID", 5, 5, 1, "100", "center");
-            $objGrid->FormatColumn("login", "Login", 30, 30, 0, "350", "left");
-            $objGrid->FormatColumn("senha", "Senha", 30, 30, 0, "300", "left");
-
+//            $objGrid->FormatColumn("id_empresa", "ID", 5, 5, 1, "50", "center");
+            $objGrid->FormatColumn("id_veiculo", "ID", 30, 30, 0, "50", "center");
+            $objGrid->FormatColumn("id_marca", "Marca", 5, 5, 0, "50", "left", "select$comboMarca");
+            $objGrid->FormatColumn("id_tipo", "Tipo", 5, 5, 0, "50", "left", "select$comboTipo");
+            $objGrid->FormatColumn("id_empresa", "Empresa", 5, 5, 0, "50", "left", "select$comboEmpresa");
+            $objGrid->FormatColumn("tx_modelo", "Modelo", 30, 30, 0, "300", "left");
             /* The setHeader function MUST be set between the <HEAD> and </HEAD>  
-              to correctly set the CSS and JS parameters */
+            to correctly set the CSS and JS parameters */
             $objGrid->setHeader();
-        } else {
+          } else {
             include 'login.html';
-        }
-        ?> 
-    </head> 
+          }
+          ?> 
+        </head> 
 
-    <body> 
-        <?php
-        $login_cookie = $_COOKIE['login'];
-        if (isset($login_cookie)) {
+        <body> 
+          <?php
+          $login_cookie = $_COOKIE['login'];
+          if (isset($login_cookie)) {
             /* draw the grid */
             $objGrid->grid();
 
             /* Disconnect from database */
             $objGrid->desconectar();
-        } else {
-            
-        }
-        ?>
-    </body> 
-</html> 
+          } else {
+
+          }
+          ?>
+        </body> 
+        </html> 
