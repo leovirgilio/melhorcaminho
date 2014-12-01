@@ -35,6 +35,7 @@ public class DijkstraMoney extends ListActivity {
 	private static final String TAG_FROM = "FromNodeName";
 	private static final String TAG_TO = "ToNodeName";
 	private static final String TAG_COST = "Cost";
+	private static final String TAG_EMPRESA = "Nome";
 	private String from;
 	private String to;
 	private ListView listView;
@@ -71,18 +72,17 @@ public class DijkstraMoney extends ListActivity {
 
 		protected String doInBackground(String... args) {
 			List<NameValuePair> params = new ArrayList<NameValuePair>();
-			params.add(new BasicNameValuePair("fromNode",from));
-			params.add(new BasicNameValuePair("toNode",to));
+			params.add(new BasicNameValuePair("fromNode", from));
+			params.add(new BasicNameValuePair("toNode", to));
 
 			JSONObject json = jParser.makeHttpRequest(url, "POST", params);
 
-			Log.i("Log", jParser.makeHttpRequest(url, "POST", params).toString());
+			Log.i("Log", jParser.makeHttpRequest(url, "POST", params)
+					.toString());
 			Log.d("Dijkstra: ", json.toString());
-			
+
 			System.out.print(json.toString());
 
-			
-			
 			try {
 				int success = json.getInt(TAG_SUCCESS);
 
@@ -95,19 +95,21 @@ public class DijkstraMoney extends ListActivity {
 						String from = c.getString(TAG_FROM);
 						String to = c.getString(TAG_TO);
 						String cost = c.getString(TAG_COST);
+						String empresa = c.getString(TAG_EMPRESA);
 
 						HashMap<String, String> map = new HashMap<String, String>();
 
 						map.put(TAG_FROM, from);
 						map.put(TAG_TO, to);
 						map.put(TAG_COST, cost);
+						map.put(TAG_EMPRESA, empresa);
 
 						dijkstraList.add(map);
 						Log.d("List: ", dijkstraList.toString());
 
 					}
 				} else {
-					
+
 					Intent i = new Intent(getApplicationContext(),
 							MainActivity.class);
 					// Closing all previous activities
@@ -115,26 +117,27 @@ public class DijkstraMoney extends ListActivity {
 					startActivity(i);
 				}
 			} catch (JSONException e) {
-				Log.d("Fude","oi");
+
 				e.printStackTrace();
 			}
 			return null;
 		}
-		
-		protected void onPostExecute(String file_url){
+
+		protected void onPostExecute(String file_url) {
 			pDialog.dismiss();
-			
+
 			runOnUiThread(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					ListAdapter adapter = new SimpleAdapter(
-							DijkstraMoney.this, dijkstraList,
-							R.layout.list_money, new String[]{TAG_FROM, TAG_TO, TAG_COST},
-							new int[]{R.id.FromNodeName, R.id.ToNodeName, R.id.cost});
+					ListAdapter adapter = new SimpleAdapter(DijkstraMoney.this,
+							dijkstraList, R.layout.list_money, new String[] {
+									TAG_FROM, TAG_TO, TAG_COST, TAG_EMPRESA },
+							new int[] { R.id.FromNodeName, R.id.ToNodeName,
+									R.id.cost, R.id.empresa });
 					setListAdapter(adapter);
-					
+
 				}
 			});
 		}

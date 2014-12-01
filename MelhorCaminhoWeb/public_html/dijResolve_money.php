@@ -26,6 +26,7 @@ if(!empty($result)){
             $dijresolve["FromNodeName"] = $row["FromNodeName"];        
             $dijresolve["ToNodeName"] = $row["ToNodeName"];
             $dijresolve["Cost"] = $row["Cost"];
+            $dijresolve["Nome"] = $row["Nome"];
            array_push($response["dijresolves"], $dijresolve);
         }
 

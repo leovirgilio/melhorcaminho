@@ -1,0 +1,547 @@
+-- phpMyAdmin SQL Dump
+-- version 3.5.2.2
+-- http://www.phpmyadmin.net
+--
+-- Servidor: localhost
+-- Tempo de Geração: 01/12/2014 às 17:13:22
+-- Versão do Servidor: 5.1.69
+-- Versão do PHP: 5.2.17
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+--
+-- Banco de Dados: `u559965827_sro`
+--
+
+DELIMITER $$
+--
+-- Procedimentos
+--
+CREATE DEFINER=`u559965827_admin`@`localhost` PROCEDURE `dijaddpath_money`(  
+  pFromNodeName VARCHAR(20), pToNodeName VARCHAR(20), pCost FLOAT, idEmpresa int  
+)
+BEGIN 
+  DECLARE vFromNodeID, vToNodeID, vPathID INT; 
+  SET vFromNodeID = ( SELECT NodeID FROM dijnodes_money WHERE NodeName = pFromNodeName  ); 
+  IF vFromNodeID IS NULL THEN 
+    BEGIN  	
+      INSERT INTO dijnodes_money (NodeName,Calculated) VALUES (pFromNodeName,0); 
+      SET vFromNodeID = LAST_INSERT_ID(); 
+    END; 
+  END IF; 
+  SET vToNodeID = ( SELECT NodeID FROM dijnodes_money WHERE NodeName = pToNodeName ); 
+  IF vToNodeID IS NULL THEN 
+    BEGIN 
+      INSERT INTO dijnodes_money(NodeName, Calculated)  
+      VALUES(pToNodeName,0); 
+      SET vToNodeID = LAST_INSERT_ID(); 
+    END; 
+  END IF; 
+  SET vPathID = ( SELECT PathID FROM dijpaths_money  
+                  WHERE FromNodeID = vFromNodeID AND ToNodeID = vToNodeID  
+                ); 
+  IF vPathID IS NULL THEN 
+    INSERT INTO dijpaths_money(FromNodeID,ToNodeID,Cost, id_empresa)  
+    VALUES(vFromNodeID,vToNodeID,pCost,idEmpresa); 
+  ELSE 
+    UPDATE dijpaths_money SET Cost = pCost   
+    WHERE FromNodeID = vFromNodeID AND ToNodeID = vToNodeID; 
+  END IF; 
+END$$
+
+CREATE DEFINER=`u559965827_admin`@`localhost` PROCEDURE `dijResolve_money`( pFromNodeName VARCHAR(20), pToNodeName VARCHAR(20) )
+BEGIN 
+  DECLARE vFromNodeID, vToNodeID, vNodeID, vPathID INT;
+  DECLARE vCost FLOAT; 
+  DECLARE vFromNodeName, vToNodeName VARCHAR(20); 
+  -- null out path info in the nodes table 
+  UPDATE dijnodes_money SET PathID = NULL,Cost = NULL,Calculated = 0; 
+  -- find nodeIDs referenced by input params 
+  SET vFromNodeID = ( SELECT NodeID FROM dijnodes_money WHERE NodeName = pFromNodeName ); 
+  IF vFromNodeID IS NULL THEN 
+    SELECT CONCAT('From node name ', pFromNodeName, ' not found.' );  
+  ELSE 
+    BEGIN 
+      -- start at src node 
+      SET vNodeID = vFromNodeID; 
+      SET vToNodeID = ( SELECT NodeID FROM dijnodes_money WHERE NodeName = pToNodeName ); 
+      IF vToNodeID IS NULL THEN 
+        SELECT CONCAT('From node name ', pToNodeName, ' not found.' ); 
+      ELSE 
+        BEGIN 
+          -- calculate path costs till all are done 
+          UPDATE dijnodes_money SET Cost=0 WHERE NodeID = vFromNodeID; 
+          WHILE vNodeID IS NOT NULL DO 
+            BEGIN 
+              UPDATE  
+                dijnodes_money AS src 
+                JOIN dijpaths_money AS Paths ON Paths.FromNodeID = src.NodeID 
+                JOIN dijnodes_money AS dest ON dest.NodeID = Paths.ToNodeID 
+              SET dest.Cost = CASE 
+                                WHEN dest.Cost IS NULL THEN src.Cost + Paths.Cost 
+                                WHEN src.Cost + Paths.Cost < dest.Cost THEN src.Cost + Paths.Cost 
+                                ELSE dest.Cost 
+                              END, 
+                  dest.PathID = Paths.PathID 
+              WHERE  
+                src.NodeID = vNodeID 
+                AND (dest.Cost IS NULL OR src.Cost + Paths.Cost < dest.Cost) 
+                AND dest.Calculated = 0; 
+        
+              UPDATE dijnodes_money SET Calculated = 1 WHERE NodeID = vNodeID; 
+
+              SET vNodeID = ( SELECT nodeID FROM dijnodes_money 
+                              WHERE Calculated = 0 AND Cost IS NOT NULL 
+                              ORDER BY Cost LIMIT 1 
+                            ); 
+            END; 
+          END WHILE; 
+        END; 
+      END IF; 
+    END; 
+  END IF; 
+  IF EXISTS( SELECT 1 FROM dijnodes_money WHERE NodeID = vToNodeID AND Cost IS NULL ) THEN 
+    -- problem,  cannot proceed 
+    SELECT CONCAT( 'Node ',vNodeID, ' missed.' ); 
+  ELSE 
+    BEGIN 
+      -- write itinerary to map table 
+      DROP TEMPORARY TABLE IF EXISTS Map; 
+      CREATE TEMPORARY TABLE Map ( 
+        RowID INT PRIMARY KEY AUTO_INCREMENT, 
+        FromNodeName VARCHAR(20), 
+        ToNodeName VARCHAR(20), 
+        Cost FLOAT 
+      ) ENGINE=MEMORY; 
+      WHILE vFromNodeID <> vToNodeID DO 
+        BEGIN 
+          SELECT  
+            src.NodeName,dest.NodeName,dest.Cost,dest.PathID 
+            INTO vFromNodeName, vToNodeName, vCost, vPathID 
+          FROM  
+            dijnodes_money AS dest 
+            JOIN dijpaths_money AS Paths ON Paths.PathID = dest.PathID 
+            JOIN dijnodes_money AS src ON src.NodeID = Paths.FromNodeID 
+          WHERE dest.NodeID = vToNodeID; 
+           
+          INSERT INTO Map(FromNodeName,ToNodeName,Cost) VALUES(vFromNodeName,vToNodeName,vCost); 
+           
+          SET vToNodeID = (SELECT FromNodeID FROM dijpaths_money WHERE PathID = vPathID); 
+        END; 
+      END WHILE; 
+      SELECT FromNodeName,ToNodeName,Cost FROM Map ORDER BY RowID DESC; 
+      DROP TEMPORARY TABLE Map; 
+    END; 
+  END IF; 
+END$$
+
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `dijnodes_money`
+--
+
+CREATE TABLE IF NOT EXISTS `dijnodes_money` (
+  `nodeID` int(11) NOT NULL AUTO_INCREMENT,
+  `nodename` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `cost` float DEFAULT NULL,
+  `pathID` int(11) DEFAULT NULL,
+  `calculated` tinyint(4) NOT NULL,
+  PRIMARY KEY (`nodeID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=48 ;
+
+--
+-- Extraindo dados da tabela `dijnodes_money`
+--
+
+INSERT INTO `dijnodes_money` (`nodeID`, `nodename`, `cost`, `pathID`, `calculated`) VALUES
+(1, 'CORNELIO PROCOPIO', NULL, NULL, 0),
+(2, 'LONDRINA', NULL, NULL, 0),
+(3, 'ASSIS', NULL, NULL, 0),
+(4, 'LEOPOLIS', NULL, NULL, 0),
+(5, 'SERTANEJA', NULL, NULL, 0),
+(6, 'OURINHOS', NULL, NULL, 0),
+(7, 'PRESIDENTE PRUDENTE', NULL, NULL, 0),
+(8, 'TUPA', NULL, NULL, 0),
+(9, 'OSVALDO CRUZ', NULL, NULL, 0),
+(10, 'ADAMANTINA', NULL, NULL, 0),
+(17, 'ANDIRA', NULL, NULL, 0),
+(18, 'ARACATUBA', NULL, NULL, 0),
+(19, 'BELO HORIZONTE', NULL, NULL, 0),
+(20, 'ARARAQUARA', NULL, NULL, 0),
+(21, 'BAURU', NULL, NULL, 0),
+(22, 'CAMPINAS', NULL, NULL, 0),
+(23, 'MARILIA', NULL, NULL, 0),
+(24, 'RANCHARIA', NULL, NULL, 0),
+(25, 'RIBEIRAO PRETO', NULL, NULL, 0),
+(11, 'SAO JOSE DO RIO PRET', NULL, NULL, 0),
+(12, 'JOSE BONIFACIO', NULL, NULL, 0),
+(29, 'CAMBURIU', NULL, NULL, 0),
+(13, 'IBAITI', NULL, NULL, 0),
+(14, 'FIGUEIRA', NULL, NULL, 0),
+(28, 'BANDEIRANTES', NULL, NULL, 0),
+(27, 'SAO CARLOS', NULL, NULL, 0),
+(26, 'RIO CLARO', NULL, NULL, 0),
+(16, 'AMERICANA', NULL, NULL, 0),
+(30, 'CURITIBA', NULL, NULL, 0),
+(31, 'FLORINEA', NULL, NULL, 0),
+(32, 'TARUMA', NULL, NULL, 0),
+(33, 'FLORIANOPOLIS', NULL, NULL, 0),
+(34, 'FOZ DO IGUACU', NULL, NULL, 0),
+(35, 'IPATINGA', NULL, NULL, 0),
+(37, 'SAO PAULO', NULL, NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `dijpaths_money`
+--
+
+CREATE TABLE IF NOT EXISTS `dijpaths_money` (
+  `pathID` int(11) NOT NULL AUTO_INCREMENT,
+  `fromNodeID` int(11) NOT NULL,
+  `toNodeID` int(11) NOT NULL,
+  `cost` float NOT NULL,
+  `id_empresa` int(11) DEFAULT NULL,
+  PRIMARY KEY (`pathID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=123 ;
+
+--
+-- Extraindo dados da tabela `dijpaths_money`
+--
+
+INSERT INTO `dijpaths_money` (`pathID`, `fromNodeID`, `toNodeID`, `cost`, `id_empresa`) VALUES
+(1, 1, 2, 14.8, NULL),
+(2, 1, 3, 17.45, NULL),
+(3, 1, 4, 3.6, NULL),
+(4, 1, 5, 4.94, NULL),
+(5, 1, 6, 24, NULL),
+(6, 2, 7, 42.04, NULL),
+(7, 2, 1, 14.8, NULL),
+(8, 2, 6, 41.59, NULL),
+(9, 2, 8, 52, NULL),
+(10, 3, 8, 22.75, NULL),
+(11, 3, 1, 17.45, NULL),
+(12, 3, 2, 27, NULL),
+(13, 6, 3, 41.59, NULL),
+(14, 6, 2, 41.59, NULL),
+(15, 6, 1, 24, NULL),
+(16, 7, 3, 14.4, NULL),
+(17, 7, 2, 42.04, NULL),
+(18, 7, 9, 15.52, NULL),
+(19, 7, 8, 14.8, NULL),
+(20, 9, 10, 3.85, NULL),
+(21, 9, 7, 15.52, NULL),
+(22, 9, 8, 46.6, NULL),
+(23, 10, 9, 3.85, NULL),
+(24, 10, 8, 14.8, NULL),
+(25, 8, 10, 14.8, NULL),
+(26, 2, 11, 72.5, NULL),
+(27, 11, 12, 12, NULL),
+(28, 3, 11, 46, NULL),
+(29, 1, 13, 25.23, NULL),
+(30, 13, 14, 8.09, NULL),
+(32, 10, 15, 0, NULL),
+(33, 16, 3, 84, NULL),
+(34, 16, 2, 113.25, NULL),
+(35, 17, 1, 10.09, NULL),
+(36, 18, 19, 148, NULL),
+(37, 18, 2, 72, NULL),
+(38, 18, 8, 19.75, NULL),
+(39, 20, 3, 67, NULL),
+(40, 20, 1, 61, NULL),
+(41, 3, 16, 84, NULL),
+(42, 3, 20, 67, NULL),
+(43, 3, 21, 30.75, NULL),
+(44, 3, 19, 144.29, NULL),
+(45, 3, 22, 87, NULL),
+(46, 3, 23, 14.4, NULL),
+(47, 3, 7, 14.4, NULL),
+(48, 3, 24, 10.1, NULL),
+(49, 3, 25, 60.5, NULL),
+(50, 3, 26, 80, NULL),
+(51, 3, 27, 75, NULL),
+(52, 28, 1, 7.18, NULL),
+(53, 28, 2, 26.78, NULL),
+(54, 21, 3, 30.75, NULL),
+(55, 21, 19, 129.2, NULL),
+(56, 21, 2, 57.25, NULL),
+(57, 19, 18, 148, NULL),
+(58, 19, 3, 144.29, NULL),
+(59, 19, 21, 129.2, NULL),
+(60, 19, 11, 124.92, NULL),
+(61, 29, 2, 110, NULL),
+(62, 22, 3, 87, NULL),
+(63, 22, 2, 101.1, NULL),
+(64, 1, 17, 10.09, NULL),
+(65, 1, 20, 61, NULL),
+(66, 1, 28, 7.18, NULL),
+(67, 1, 30, 106.31, NULL),
+(68, 1, 31, 11.3, NULL),
+(69, 1, 32, 14.6, NULL),
+(70, 30, 1, 106.31, NULL),
+(71, 30, 2, 105.92, NULL),
+(72, 33, 2, 122.3, NULL),
+(73, 31, 1, 11.3, NULL),
+(74, 34, 2, 113.69, NULL),
+(75, 35, 2, 224.07, NULL),
+(76, 12, 8, 42.1, NULL),
+(77, 4, 1, 3.6, NULL),
+(78, 2, 16, 113.25, NULL),
+(79, 2, 18, 72, NULL),
+(80, 2, 3, 27, NULL),
+(81, 2, 28, 26.78, NULL),
+(82, 2, 21, 57.25, NULL),
+(83, 2, 29, 110, NULL),
+(84, 2, 22, 101.1, NULL),
+(85, 2, 30, 105.92, NULL),
+(86, 2, 33, 122.3, NULL),
+(87, 2, 36, 113.69, NULL),
+(88, 2, 35, 224.07, NULL),
+(89, 2, 23, 40.75, NULL),
+(90, 2, 9, 54.76, NULL),
+(91, 2, 25, 86.5, NULL),
+(92, 2, 26, 109.25, NULL),
+(93, 2, 27, 104.25, NULL),
+(94, 2, 37, 100.1, NULL),
+(95, 23, 3, 14.4, NULL),
+(96, 23, 2, 40.75, NULL),
+(97, 23, 8, 9.45, NULL),
+(98, 9, 2, 54.76, NULL),
+(99, 24, 3, 10.1, NULL),
+(100, 25, 3, 60.5, NULL),
+(101, 25, 2, 86.5, NULL),
+(102, 26, 3, 80, NULL),
+(103, 26, 2, 109.25, NULL),
+(104, 27, 3, 75, NULL),
+(105, 27, 2, 104.25, NULL),
+(106, 11, 3, 46, NULL),
+(107, 11, 19, 124.92, NULL),
+(108, 11, 2, 72.5, NULL),
+(109, 37, 2, 100.1, NULL),
+(110, 5, 1, 4.94, NULL),
+(111, 32, 1, 14.6, NULL),
+(112, 8, 18, 19.75, NULL),
+(113, 8, 3, 22.75, NULL),
+(114, 8, 12, 42.1, NULL),
+(115, 8, 2, 52, NULL),
+(116, 8, 23, 9.45, NULL),
+(117, 8, 7, 14.8, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `gui_tb_cidade`
+--
+
+CREATE TABLE IF NOT EXISTS `gui_tb_cidade` (
+  `id_cidade` int(11) NOT NULL AUTO_INCREMENT,
+  `id_uf` int(11) NOT NULL,
+  `tx_nome` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_cidade`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=10 ;
+
+--
+-- Extraindo dados da tabela `gui_tb_cidade`
+--
+
+INSERT INTO `gui_tb_cidade` (`id_cidade`, `id_uf`, `tx_nome`) VALUES
+(1, 16, 'CORNELIO PROCOPIO'),
+(2, 16, 'Londrina'),
+(3, 25, 'Adamantina'),
+(4, 25, 'Assis'),
+(5, 25, 'Presidente Prudente'),
+(6, 25, 'Osvaldo Cruz'),
+(7, 25, 'TUPA'),
+(8, 16, 'Sertaneja'),
+(9, 16, 'Leópolis');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `gui_tb_empresa`
+--
+
+CREATE TABLE IF NOT EXISTS `gui_tb_empresa` (
+  `id_empresa` int(11) NOT NULL AUTO_INCREMENT,
+  `nome` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tx_telefone` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tx_site` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_empresa`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=28 ;
+
+--
+-- Extraindo dados da tabela `gui_tb_empresa`
+--
+
+INSERT INTO `gui_tb_empresa` (`id_empresa`, `nome`, `tx_telefone`, `tx_site`) VALUES
+(24, 'EXPRESSO ADAMANTINA', NULL, NULL),
+(23, 'GONTIJO', NULL, NULL),
+(22, 'GUERINO SEISCENTOS', NULL, NULL),
+(21, 'GARCIA', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `gui_tb_local`
+--
+
+CREATE TABLE IF NOT EXISTS `gui_tb_local` (
+  `id_local` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cidade` int(11) NOT NULL,
+  `tx_endereco` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `tx_numero` varchar(15) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tx_cep` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `tx_geolocation` varchar(150) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_local`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `gui_tb_marca`
+--
+
+CREATE TABLE IF NOT EXISTS `gui_tb_marca` (
+  `id_marca` int(11) NOT NULL AUTO_INCREMENT,
+  `tx_nome` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id_marca`),
+  KEY `id_marca` (`id_marca`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+
+--
+-- Extraindo dados da tabela `gui_tb_marca`
+--
+
+INSERT INTO `gui_tb_marca` (`id_marca`, `tx_nome`) VALUES
+(1, 'MARCOPOLO'),
+(2, 'VOLKSWAGEN'),
+(3, 'VOLVO'),
+(4, 'MERCEDES-BENZ'),
+(5, 'FORD');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `gui_tb_rota`
+--
+
+CREATE TABLE IF NOT EXISTS `gui_tb_rota` (
+  `id_rota` int(11) NOT NULL AUTO_INCREMENT,
+  `id_origem` int(11) NOT NULL,
+  `id_destino` int(11) NOT NULL,
+  `in_tempo` int(11) NOT NULL,
+  `fl_preco` float NOT NULL,
+  `dt_atualizado` datetime NOT NULL,
+  PRIMARY KEY (`id_rota`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `gui_tb_tipo`
+--
+
+CREATE TABLE IF NOT EXISTS `gui_tb_tipo` (
+  `id_tipoveiculo` int(11) NOT NULL AUTO_INCREMENT,
+  `tx_tipo` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `nu_lugares` int(11) NOT NULL,
+  `ic_acessivel` bit(1) NOT NULL,
+  PRIMARY KEY (`id_tipoveiculo`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
+
+--
+-- Extraindo dados da tabela `gui_tb_tipo`
+--
+
+INSERT INTO `gui_tb_tipo` (`id_tipoveiculo`, `tx_tipo`, `nu_lugares`, `ic_acessivel`) VALUES
+(1, 'SEMI LEITO', 42, b'1'),
+(2, 'EXECUTIVO', 42, b'0'),
+(3, 'URBANO', 42, b'0'),
+(4, 'LEITO', 18, b'0');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `gui_tb_uf`
+--
+
+CREATE TABLE IF NOT EXISTS `gui_tb_uf` (
+  `id_uf` int(11) NOT NULL AUTO_INCREMENT,
+  `tx_nome` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `tx_sigla` char(2) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_uf`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=39 ;
+
+--
+-- Extraindo dados da tabela `gui_tb_uf`
+--
+
+INSERT INTO `gui_tb_uf` (`id_uf`, `tx_nome`, `tx_sigla`) VALUES
+(1, 'ACRE', 'AC'),
+(2, 'ALAGOAS', 'AL'),
+(3, 'AMAPA', 'AP'),
+(4, 'AMAZONAS', 'AM'),
+(5, 'BAHIA', 'BA'),
+(6, 'CEARA', 'CE'),
+(7, 'Distrito Federal', 'DF'),
+(8, 'Espírito Santo', 'ES'),
+(9, 'Goiás', 'GO'),
+(10, 'Maranhão', 'MA'),
+(11, 'Mato Grosso', 'MT'),
+(12, 'Mato Grosso do Sul', 'MS'),
+(13, 'Minas Gerais', 'MG'),
+(14, 'Pará', 'PA'),
+(15, 'Paraíba', 'PB'),
+(16, 'Paraná', 'PR'),
+(17, 'Pernambuco', 'PE'),
+(18, 'Piauí', 'PI'),
+(19, 'Rio de Janeiro', 'RJ'),
+(20, 'Rio Grande do Norte', 'RN'),
+(21, 'Rio Grande do Sul', 'RS'),
+(22, 'Rondônia', 'RO'),
+(23, 'Roraima', 'RR'),
+(24, 'Santa Catarina', 'SC'),
+(25, 'São Paulo', 'SP'),
+(26, 'Sergipe', 'SE'),
+(27, 'Tocantins', 'TO');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `gui_tb_veiculo`
+--
+
+CREATE TABLE IF NOT EXISTS `gui_tb_veiculo` (
+  `id_veiculo` int(11) NOT NULL AUTO_INCREMENT,
+  `id_marca` int(11) NOT NULL,
+  `id_tipo` int(11) NOT NULL,
+  `id_empresa` int(11) NOT NULL,
+  `tx_modelo` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id_veiculo`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `usuarios`
+--
+
+CREATE TABLE IF NOT EXISTS `usuarios` (
+  `ID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `login` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `senha` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=6 ;
+
+--
+-- Extraindo dados da tabela `usuarios`
+--
+
+INSERT INTO `usuarios` (`ID`, `login`, `senha`) VALUES
+(0000000005, 'teste', '698dc19d489c4e4db73e28a713eab07b'),
+(0000000002, 'admin', '21232f297a57a5a743894a0e4a801fc3'),
+(0000000003, 'alexandrercx@hotmail.com', '2e3817293fc275dbee74bd71ce6eb056');

@@ -29,10 +29,12 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/destino" />
+
         <TextView
             android:id="@+id/ToNodeName"
             android:layout_width="fill_parent"
@@ -40,20 +42,41 @@
             android:paddingLeft="6dip"
             android:paddingTop="6dip"
             android:textSize="17dip"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/reais" />
+
         <TextView
             android:id="@+id/cost"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="6dip"
+            android:paddingTop="6dip"
+            android:textSize="17dip"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empresa" />
+
+        <TextView
+            android:id="@+id/empresa"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="6dip"
