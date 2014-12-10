@@ -31,25 +31,25 @@
 
   For contact author: tavoarcila at gmail dot com or info at gurusistemas dot com
  */ ?> 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml"> 
-    <head> 
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        <link rel="stylesheet" type="text/css" href="css/comum.css"></link>
-        <title>Caminhos - Melhor Caminho</title> 
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"  
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+ <html xmlns="http://www.w3.org/1999/xhtml"> 
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" type="text/css" href="css/comum.css"></link>
+  <title>Caminhos - Melhor Caminho</title> 
 
-        <?php
-        $login_cookie = $_COOKIE['login'];
-        if (isset($login_cookie)) {
-            /* Include class file */
-            include ("phpmydatagrid.class.php");
+  <?php
+  $login_cookie = $_COOKIE['login'];
+  if (isset($login_cookie)) {
+    /* Include class file */
+    include ("phpmydatagrid.class.php");
 
-            /* Create object */
-            $objGrid = new datagrid;
+    /* Create object */
+    $objGrid = new datagrid;
 
             /* Define the "FORM" will be named employee and Must be  
-              created by the grid script */
+            created by the grid script */
             $objGrid->form('dijpaths_money', true);
 
             /* Connect with the database */
@@ -68,16 +68,20 @@
               $id_path = $exibe['nodeID'];
 
               $combo = $combo.":".$id_path."_".$value;
-             
+
             }
 
-            while ($exibe = mysql_fetch_assoc($sql2)) {
+            $sqlEmpresa = mysql_query("SELECT * FROM gui_tb_empresa");
+            $comboEmpresa;
+            
+            while ($exibe = mysql_fetch_assoc($sqlEmpresa)) {
               $value = $exibe['nome'];
               $id_path = $exibe['id_empresa'];
 
-              $combo2 = $combo2.":".$id_path."_".$value;
+              $comboEmpresa = $comboEmpresa.":".$id_path."_".$value;
 
             }
+
 
 
             $objGrid->conectadb("mysql.hostinger.com.br", "u559965827_admin", "leonardo$123", "u559965827_sro");
@@ -85,7 +89,7 @@
             /* Select the table to use */
             $objGrid->tabla("dijpaths_money");
 
-            $objGrid->buttons(false, false, true);
+            $objGrid->buttons(false, true, true);
 
             $objGrid->keyfield("pathID");
 
@@ -109,28 +113,37 @@
             $objGrid->FormatColumn("fromNodeID", "Origem", 5, 5, 0, "250", "left", "select$combo");
             $objGrid->FormatColumn("toNodeID", "Destino", 5, 5, 0, "250", "left", "select$combo");
             $objGrid->FormatColumn("cost", "Custo", 30, 30, 0, "30", "left");
-            $objGrid->FormatColumn("id_empresa", "Empresa", 30, 30, 0, "150", "select$combo2");
+            $objGrid->FormatColumn("id_empresa", "Empresa", 5, 5, 0, "250", "left", "select$comboEmpresa");
             /* The setHeader function MUST be set between the <HEAD> and </HEAD>  
-              to correctly set the CSS and JS parameters */
+            to correctly set the CSS and JS parameters */
             $objGrid->setHeader();
-        } else {
+          } else {
             include 'login.html';
-        }
-        ?> 
-    </head> 
+          }
+          ?> 
+        </head> 
 
-    <body> 
-        <?php
-        $login_cookie = $_COOKIE['login'];
-        if (isset($login_cookie)) {
+        <body> 
+          <?php
+          $login_cookie = $_COOKIE['login'];
+          if (isset($login_cookie)) {
             /* draw the grid */
             $objGrid->grid();
+            $connect = mysql_connect('mysql.hostinger.com.br', 'u559965827_admin', 'leonardo$123');
+            $db = mysql_select_db('u559965827_sro');
+            echo "<form method='POST' action='caminho.php'>
+                    <label>De:</label><input type='text' name='toNode' id='toNode'><br>
+                    <label>Para:</label><input type='text' name='fromNode' id='fromNode'><br>
+                    <label>Custo:</label><input type='text' name='cost' id='cost'><br>
+                    <input type='submit' value='Cadastrar' id='cadastrar' name='cadastrar'>
+                </form>
+            </div>";
 
             /* Disconnect from database */
             $objGrid->desconectar();
-        } else {
-            
-        }
-        ?>
-    </body> 
-</html> 
+          } else {
+
+          }
+          ?>
+        </body> 
+        </html> 

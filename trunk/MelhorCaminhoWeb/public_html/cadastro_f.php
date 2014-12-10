@@ -33,11 +33,11 @@ and open the template in the editor.
                         PONTOS
                     </a>
                 </li>
-                <li>
+<!--                 <li>
                     <a href="cidades.php" class="menubk" id="menucidade">
                         CIDADE
                     </a>
-                </li>
+                </li> -->
                 <li>
                     <a href="uf.php" class="menubk" id="menuuf">
                         UF
